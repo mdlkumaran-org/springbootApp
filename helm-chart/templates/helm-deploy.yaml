@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springbootapp
+spec:
+  selector:
+    matchLabels:
+      app: springbootapp
+  replicas: 1
+  template: # template for the pods
+    metadata:
+      labels:
+        app: springbootapp
+    spec:
+      containers:
+      - name: springbootapp
+        image: ${REPOSITORY_TAG}
+        imagePullPolicy: IfNotPresent
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: springbootapp-service
+
+spec:
+  # This defines which pods are going to be represented by this Service
+  # The service becomes a network endpoint for either other services
+  # or maybe external users to connect to (eg browser)
+  selector:
+    app: springbootapp
+
+  ports:
+    - name: http
+      port: 8080
+      nodePort: 30050
+
+  type: NodePort
